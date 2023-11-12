@@ -1,34 +1,54 @@
 import React, { useEffect, useState } from "react";
-
+import { addToCart,deleteFromCart } from "../apiCalls/helperFunctions";
 const Cart = ({
+  setTrackCart,
+  trackCart,
   currentUser,
   shoesRequests,
   setUserCartItems,
   userCartItems,
+  trackAddProduct,
+setTrackAddProduct,
+setCartError,
+cartError
 }) => {
   const orderCart = document.querySelector(".cart");
   function handleCloseCart() {
     orderCart.style.right = "-1000px";
   }
+  
 
   useEffect(() => {
+    let init = 0
     if(currentUser){
         shoesRequests.getCart(currentUser).then((results) => {
             const response = results.data;
+            if (response.error) {
+              console.log(response.error)
+            }
             setUserCartItems({
               cartItems: response.cartItems,
               data: response.data,
               total: response.total,
             });
           })
+          setTrackCart((prevTrack)=>prevTrack+1)
+
+    }else{
+      setUserCartItems({
+        cartItems: "",
+        data: [],
+        total: init.toFixed(2),
+      });
 
     }
     
-  }, [currentUser]);
+  }, [trackAddProduct]);
   function handleCheckout() {
     console.log("welele");
   }
   let cartProducts = [];
+ 
   if (userCartItems.data.length === 0) {
     cartProducts = [];
   } else if (userCartItems.data.length === 1) {
@@ -52,16 +72,16 @@ const Cart = ({
             <p className="addSubtract center">
               <i
                 className="fa-solid fa-minus minus"
-                onClick={()=>console.log("lolo")}
+                onClick={()=> deleteFromCart(shoesRequests,setTrackCart ,currentUser,data.shoe_id, 1)}
               ></i>
               <span className="cartItemNumber">{data.qty}</span>
               <i
                 className="fa-solid fa-plus plus"
-                onClick={()=>console.log("lolo")}
+                onClick={()=>addToCart(currentUser,data.shoe_id,shoesRequests,setTrackCart,setCartError)}
               ></i>
             </p>
           </div>
-          <i className="bi bi-trash3-fill" onClick={()=>console.log("lolo")}></i>
+          <i className="bi bi-trash3-fill" onClick={()=> deleteFromCart(shoesRequests,setTrackCart ,currentUser,data.shoe_id, data.qty)}></i>
         </div>
       );
   } else {
@@ -101,7 +121,7 @@ const Cart = ({
   return (
     <div id="cart" className="cart">
       <i className="bi bi-x closeCart" onClick={handleCloseCart}></i>
-      <p className="errorCart  mt-5"></p>
+      <p className="errorCart  mt-5">{cartError}</p>
 
       <div className="cartProducts mb-5 pb-5">{cartProducts}</div>
       <div className="bg-secondary row w-100 d-flex justify-content-center paymentAmount">

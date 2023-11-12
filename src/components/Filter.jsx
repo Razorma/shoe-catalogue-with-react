@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-const Filter = ({shoesRequests,setShoesElements}) => {
-    const backNav = document.querySelector(".backNav")
-    const searchToggler = document.querySelector(".search-toggler")
-    const errorSelect = document.querySelector(".errorSelect")
+const Filter = ({
+  shoesRequests,
+  setShoesElements
+}) => {
+  const backNav = document.querySelector(".backNav");
+  const searchToggler = document.querySelector(".search-toggler");
+
   const [filterData, setFilterData] = useState({
     brand: "",
     color: "",
@@ -11,9 +14,8 @@ const Filter = ({shoesRequests,setShoesElements}) => {
   });
 
   function handleChange(event) {
-    
-    const { name, value} = event.target;
-    
+    const { name, value } = event.target;
+
     setFilterData((prevFilterData) => {
       return {
         ...prevFilterData,
@@ -21,159 +23,115 @@ const Filter = ({shoesRequests,setShoesElements}) => {
       };
     });
   }
-  function handleSubmit(){
+  function handleSubmit() {
     if (filterData.brand && filterData.size && filterData.color) {
-        shoesRequests
-            .getShoeByBrandSizeAndColor(filterData.brand, filterData.size, filterData.color)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-                
-            });
+      shoesRequests
+        .getShoeByBrandSizeAndColor(
+          filterData.brand,
+          filterData.size,
+          filterData.color
+        )
+        .then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
     } else if (filterData.brand && filterData.size && !filterData.color) {
-        shoesRequests
-            .getShoeByBrandAndSize(filterData.brand, filterData.size)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-            });
+      
+      shoesRequests
+        .getShoeByBrandAndSize(filterData.brand, filterData.size)
+        .then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
     } else if (filterData.color && filterData.size && !filterData.brand) {
-        shoesRequests
-            .getShoeBySizeAndColor(filterData.size, filterData.color)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-            });
+      
+      shoesRequests
+        .getShoeBySizeAndColor(filterData.size, filterData.color)
+        .then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
     } else if (filterData.brand && filterData.color && !filterData.size) {
-        shoesRequests
-            .getShoeByBrandAndColor(filterData.brand, filterData.color)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-            });
+      
+      shoesRequests
+        .getShoeByBrandAndColor(filterData.brand, filterData.color)
+        .then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
     } else if (filterData.brand && !filterData.size && !filterData.color) {
-        shoesRequests
-            .getShoeByBrand(filterData.brand)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-            });
+      
+      shoesRequests.getShoeByBrand(filterData.brand).then(function (results) {
+        let response = results.data;
+        let data = response.data;
+        setShoesElements(data);
+        if (!data) {
+          setShoesElements("Out Of Stock");
+        }
+      });
     } else if (!filterData.brand && !filterData.color && filterData.size) {
-        shoesRequests
-            .getShoeBySize(filterData.size)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-            });
+      
+      shoesRequests.getShoeBySize(filterData.size).then(function (results) {
+        let response = results.data;
+        let data = response.data;
+        setShoesElements(data);
+        if (!data) {
+          setShoesElements("Out Of Stock");
+        }
+      });
     } else if (!filterData.brand && filterData.color && !filterData.size) {
-        shoesRequests
-            .getShoeByColor(filterData.color)
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-                if (!data) {
-                    errorSelect.classList.add('danger')
-                    errorSelect.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        errorSelect.innerHTML = ""
-                        errorSelect.classList.remove('danger')
-                    }, 3000)
-                }
-                if (response.error) {
-                    productContainer.classList.add('danger')
-                    productContainer.innerHTML = "Out Of Stock"
-                    setTimeout(() => {
-                        productContainer.innerHTML = ""
-                        productContainer.classList.remove('danger')
-                    }, 3000)
-                }
-
-            });
+      
+      shoesRequests.getShoeByColor(filterData.color).then(function (results) {
+        let response = results.data;
+        let data = response.data;
+        setShoesElements(data);
+        if (!data) {
+          setShoesElements("Out Of Stock");
+        }
+        if (response.error) {
+          setShoesElements("Out Of Stock");
+        }
+      });
     } else {
-        shoesRequests
-            .getShoes()
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-            });
+      shoesRequests.getShoes().then(function (results) {
+        let response = results.data;
+        let data = response.data;
+        setShoesElements(data);
+      });
     }
-    
-    backNav.style.display = "flex"
 
+    backNav.style.display = "flex";
   }
 
-  function exitSearch(){
-    searchToggler.click('')
+  function exitSearch() {
+    searchToggler.click("");
     setFilterData({
-            brand: "",
-            color: "",
-            size: "",
-      });
-      backNav.style.display = "none"
-      shoesRequests
-            .getShoes()
-            .then(function (results) {
-                let response = results.data;
-                let data = response.data;
-                setShoesElements(data)
-            });
-
+      brand: "",
+      color: "",
+      size: "",
+    });
+    backNav.style.display = "none";
+    shoesRequests.getShoes().then(function (results) {
+      let response = results.data;
+      let data = response.data;
+      setShoesElements(data);
+    });
   }
 
   return (
@@ -190,7 +148,7 @@ const Filter = ({shoesRequests,setShoesElements}) => {
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        Filter
+        Filter <span></span>
         <i className="bi bi-filter-square-fill"></i>
       </button>
       <div
@@ -284,7 +242,6 @@ const Filter = ({shoesRequests,setShoesElements}) => {
               id="backButton"
               style={{ display: "none" }}
               onClick={exitSearch}
-              
             />
           </div>
         </div>

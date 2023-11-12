@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
-const Header = ({logInStatus,currentUser,setCurrentUser}) => {
+const Header = ({setLogInStatus,logInStatus,currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) => {
   function closeNavbar() {
     var navNavbar = document.getElementById("navNavbar");
     var bootstrapButton = document.querySelector(".navbar-toggler");
@@ -18,8 +18,12 @@ const Header = ({logInStatus,currentUser,setCurrentUser}) => {
   }
   function logOut() {
     setCurrentUser("")
-    location.reload()
-    
+    setTrackAddProduct((prevTrack)=>prevTrack+1)
+    shoesRequests
+      .logOut()
+      // location.reload()
+      localStorage.removeItem("CurrentUser")
+      setLogInStatus(false)
   }
   return (
     <header className="p-0 m-0 container-fluid fixed-top">
@@ -50,8 +54,8 @@ const Header = ({logInStatus,currentUser,setCurrentUser}) => {
                   className="nav-link text-light logoutElem"
                   onClick={closeNavbar}
                 >
-                  {logInStatus&& <i className="bi bi-box-arrow-left " id="logoutIcon" onClick={logOut}> {currentUser}</i>}
-                  {!logInStatus&& <i
+                  {currentUser&& <i className="bi bi-box-arrow-left " id="logoutIcon" onClick={logOut}> {currentUser}</i>}
+                  {!currentUser&& <i
                     data-bs-toggle="modal"
                     data-bs-target="#loginModal"
                     className="bi bi-person-circle"

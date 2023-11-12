@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
 import shoes from "../apiCalls/requests"
 import axios from "axios"
+import { addToCart } from "../apiCalls/helperFunctions";
+// axios.defaults.withCredentials = true;
 
 const shoesRequests = shoes(axios)
 
 
-const Products = ({shoe_picture,shoe_name,brand_name,stock, shoe_size,price}) => {
+const Products = ({setTrackCart,currentUser,shoe_id,shoe_picture,shoe_name,brand_name,stock, shoe_size,price,loginModal,setCartError}) => {
 
     function capitalize(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
+ 
     
   return (
         <>
@@ -28,7 +31,7 @@ const Products = ({shoe_picture,shoe_name,brand_name,stock, shoe_size,price}) =>
           <button
             type="submit"
             className="productButton"
-            // onClick="addToCart({{id}})"
+            onClick={()=>addToCart(currentUser,shoe_id,shoesRequests,setTrackCart,setCartError)}
           >
             Add<i className="bi bi-cart4"></i>
           </button>

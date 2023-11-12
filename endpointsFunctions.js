@@ -52,6 +52,7 @@ const surname = document.querySelector(".surname")
 const SignUpEmail = document.querySelector(".SignUp-email")
 const SignUpPassword = document.querySelector(".SignUp-password")
 
+
 //create instances fot the handlebars templates
 let cartTemplateInstance = Handlebars.compile(cartTemplate.innerHTML)
 let productTemplateInstance = Handlebars.compile(productTemplate.innerHTML)
