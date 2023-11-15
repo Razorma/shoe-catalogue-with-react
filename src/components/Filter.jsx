@@ -13,6 +13,7 @@ const Filter = ({
     size: "",
   });
 
+
   function handleChange(event) {
     const { name, value } = event.target;
 

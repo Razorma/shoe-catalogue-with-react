@@ -5,7 +5,7 @@ import axios from "axios";
 
 const shoesRequests = shoes(axios);
 
-const LoginModal = ({ setLogInStatus, setCurrentUser, setUserRole,logInError,setLogInError }) => {
+const LoginModal = ({ setCurrentUser, setUserRole,logInError,setLogInError }) => {
   const [loginFormData, setLoginFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +26,6 @@ const LoginModal = ({ setLogInStatus, setCurrentUser, setUserRole,logInError,set
     await shoesRequests
       .login(loginFormData.email, loginFormData.password)
       .then((results) => {
-        setLogInStatus(true);
         
         let response = results.data;
 

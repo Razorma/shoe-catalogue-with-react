@@ -6,7 +6,6 @@ const Contact = () => {
     messageEmail: "",
     message: "",
   });
-
   function handleChange(event){
     const { name, value } = event.target;
     setMessageFormData((prevFormData) => {

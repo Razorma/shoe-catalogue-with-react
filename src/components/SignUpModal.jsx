@@ -22,7 +22,6 @@ const SignUpModal = ({ shoesRequests, signUpError,setSignUpError}) => {
     });
   }
 
-
   function handleSubmit(event) {
        
     if (signUpEmail.validity.typeMismatch) {  

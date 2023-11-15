@@ -2,39 +2,41 @@ import React, { useEffect, useState } from "react";
 import { addToCart,deleteFromCart } from "../apiCalls/helperFunctions";
 const Cart = ({
   setTrackCart,
-  trackCart,
   currentUser,
   shoesRequests,
   setUserCartItems,
   userCartItems,
   trackAddProduct,
-setTrackAddProduct,
+  setTrackAddProduct,
 setCartError,
 cartError
 }) => {
-  const orderCart = document.querySelector(".cart");
-  function handleCloseCart() {
-    orderCart.style.right = "-1000px";
-  }
   
-
   useEffect(() => {
     let init = 0
-    if(currentUser){
-        shoesRequests.getCart(currentUser).then((results) => {
-            const response = results.data;
-            if (response.error) {
-              console.log(response.error)
-            }
-            setUserCartItems({
-              cartItems: response.cartItems,
-              data: response.data,
-              total: response.total,
-            });
-          })
-          setTrackCart((prevTrack)=>prevTrack+1)
-
-    }else{
+    
+      async function getCart(){
+        await shoesRequests.getCart(currentUser).then((results) => {
+          const response = results.data;
+          if (response.error) {
+            console.log(response.error)
+          }
+          setUserCartItems({
+            cartItems: response.cartItems,
+            data: response.data,
+            total: response.total,
+          });
+          // if(response.status === 'success'){
+          //   setTrackCart((prevTrack)=>prevTrack+1)
+          // }
+        })
+       
+        // setTrackCart((prevTrack)=>prevTrack+1)
+      }
+        
+      if(currentUser){    
+        getCart()
+       }else{
       setUserCartItems({
         cartItems: "",
         data: [],
@@ -42,7 +44,7 @@ cartError
       });
 
     }
-    
+  // }, []);
   }, [trackAddProduct]);
   function handleCheckout() {
     console.log("welele");
@@ -54,7 +56,7 @@ cartError
   } else if (userCartItems.data.length === 1) {
     for (let data of userCartItems.data)
       cartProducts = (
-        <div className="cart-box" key={data.shoe_name}>
+        <div className="cart-box" key={data.shoe_id}>
           <img src={data.shoe_picture} href={data.shoe_picture} alt="" />
           <div className="cart-info">
             <span className="nameOfShoeCart">{data.shoe_name}</span>
@@ -72,21 +74,26 @@ cartError
             <p className="addSubtract center">
               <i
                 className="fa-solid fa-minus minus"
-                onClick={()=> deleteFromCart(shoesRequests,setTrackCart ,currentUser,data.shoe_id, 1)}
+                onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,data.shoe_id, 1)}
               ></i>
               <span className="cartItemNumber">{data.qty}</span>
               <i
                 className="fa-solid fa-plus plus"
-                onClick={()=>addToCart(currentUser,data.shoe_id,shoesRequests,setTrackCart,setCartError)}
+                //deleteFromCart( loginModal,shoesRequests,setTrackCart ,currentUser,id, qty)
+              onClick={()=>addToCart(setTrackAddProduct,loginModal,currentUser,data.shoe_id,setTrackCart,setCartError)}
               ></i>
             </p>
           </div>
-          <i className="bi bi-trash3-fill" onClick={()=> deleteFromCart(shoesRequests,setTrackCart ,currentUser,data.shoe_id, data.qty)}></i>
+          <i 
+          className="bi bi-trash3-fill" 
+          
+          onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,data.shoe_id, data.qty)}
+          ></i>
         </div>
       );
   } else {
-    cartProducts = userCartItems.data.map((shoe) => (
-      <div className="cart-box" key={shoe.shoe_name}>
+    cartProducts = userCartItems.data.map((shoe) => (  
+      <div className="cart-box" key={shoe.shoe_id}>
         <img src={shoe.shoe_picture} href={shoe.shoe_picture} alt="" />
         <div className="cart-info">
           <span className="nameOfShoeCart">{shoe.shoe_name}</span>
@@ -104,23 +111,22 @@ cartError
           <p className="addSubtract center">
             <i
               className="fa-solid fa-minus minus"
-              onClick={()=>console.log("lolo")}
+              onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,shoe.shoe_id, 1)}
             ></i>
             <span className="cartItemNumber">{shoe.qty}</span>
             <i
-              className="fa-solid fa-plus plus"
-              onClick={()=>console.log("lolo")}
+              className="fa-solid fa-plus plus" onClick={()=>addToCart(setTrackAddProduct,loginModal,currentUser,shoe.shoe_id,setTrackCart,setCartError)}
             ></i>
           </p>
-        </div>
-        <i className="bi bi-trash3-fill" onClick={()=>console.log("lolo")}></i>
+        </div>                       
+        <i className="bi bi-trash3-fill" onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,shoe.shoe_id, shoe.qty)}></i>
       </div>
     ));
   }
 
   return (
     <div id="cart" className="cart">
-      <i className="bi bi-x closeCart" onClick={handleCloseCart}></i>
+      <i className="bi bi-x closeCart" onClick={()=> document.querySelector(".cart").style.right = "-1000px"}></i>
       <p className="errorCart  mt-5">{cartError}</p>
 
       <div className="cartProducts mb-5 pb-5">{cartProducts}</div>

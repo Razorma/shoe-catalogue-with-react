@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
-const Header = ({setLogInStatus,logInStatus,currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) => {
+const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) => {
   function closeNavbar() {
     var navNavbar = document.getElementById("navNavbar");
     var bootstrapButton = document.querySelector(".navbar-toggler");
@@ -9,6 +9,7 @@ const Header = ({setLogInStatus,logInStatus,currentUser,setCurrentUser,shoesRequ
       bootstrapButton.click(); // Click the button to close the Navbar
     }
   }
+
   function closeSearchbar() {
     var navNavbar = document.getElementById("mynavbar");
     var bootstrapButton = document.querySelector(".search-toggler");
@@ -23,7 +24,6 @@ const Header = ({setLogInStatus,logInStatus,currentUser,setCurrentUser,shoesRequ
       .logOut()
       // location.reload()
       localStorage.removeItem("CurrentUser")
-      setLogInStatus(false)
   }
   return (
     <header className="p-0 m-0 container-fluid fixed-top">
