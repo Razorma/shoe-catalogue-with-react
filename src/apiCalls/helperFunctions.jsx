@@ -1,134 +1,166 @@
 import axios from "axios";
 import shoes from "./requests";
-const shoesFunction = shoes(axios)
+const shoesFunction = shoes(axios);
 export function addToCart(
-    setTrackAddProduct,
-    loginModal,
+  setTrackAddProduct,
+  loginModal,
   currentUser,
   id,
   setTrackCart,
   setCartError
 ) {
-  
   if (currentUser) {
     shoesFunction.addToCart(currentUser, id).then((results) => {
-      const response = results.data
+      const response = results.data;
       if (response.error) {
-        console.log(response.error);
-        setCartError(
-          response.error
-        );
+        setCartError(response.error);
         setTimeout(() => {
           setCartError("");
         }, 3000);
       } else {
-       
         setTrackAddProduct((prevTrack) => prevTrack + 1);
         setTrackCart((prevTrack) => prevTrack + 1);
-        // location.reload()
       }
     });
-    
   } else {
     loginModal.click();
   }
 }
-export async function deleteFromCart(setTrackAddProduct, loginModal,setTrackCart ,currentUser,id, qty) {
+export async function deleteFromCart(
+  setTrackAddProduct,
+  loginModal,
+  setTrackCart,
+  currentUser,
+  id,
+  qty
+) {
   if (currentUser) {
-  await shoesFunction.deleteCartItem(currentUser, id, qty);
-  setTrackCart((prevTrack) => prevTrack + 1);
-  setTrackAddProduct((prevTrack) => prevTrack + 1);
-  }else{
+    await shoesFunction.deleteCartItem(currentUser, id, qty);
+    setTrackCart((prevTrack) => prevTrack + 1);
+    setTrackAddProduct((prevTrack) => prevTrack + 1);
+  } else {
     loginModal.click();
   }
-
 }
 
-export async function chechoutFromCart() {
+export async function chechoutFromCart(
+  paymentAmount,
+  currentUser,
+  loginModal,
+  setCartError,
+  userCartItems,
+  setTrackCart,
+  setTrackAddProduct
+) {
+    
+  if (userCartItems.total !== '0.00') {
+    
+    if (paymentAmount > userCartItems.total) {
 
-  if (parseFloat(amountTotal.innerHTML) !== 0.00) {
-      if (paymentAmount.value > parseFloat(amountTotal.innerHTML)) {
-          await shoesService.checkoutCartItem(loginUser)
-              .then((results) => {
-                  const response = results.data;
-                  if (response.error) {
-                      cartErrorElem.innerHTML = response.error
-                      setTimeout(() => {
-                          cartErrorElem.innerHTML = ""
-                      }, 3000)
-                      if (!loginUser) {
-                          loginButtonModal.click()
-                      }
-
-                  } else {
-                      cartErrorElem.classList.add('text-green')
-                      cartErrorElem.innerHTML = "Checkout Succesfull shoe will be dilivered within 7 bussines days"
-                      setTimeout(() => {
-                          cartErrorElem.innerHTML = ""
-                          cartErrorElem.classList.remove('text-green')
-                      }, 3000)
-                      if (!loginUser) {
-                          loginButtonModal.click()
-                      }
-                  }
-              });
-          showShoes(currentBrand, currentSize, currentColor);
-          showCart();
-          if ((paymentAmount.value - parseFloat(amountTotal.innerHTML)) > 0) {
-              cartErrorElem.classList.add('text-green')
-              cartErrorElem.innerHTML = `Payment Successsfull <br> Your change is ${(paymentAmount.value - parseFloat(amountTotal.innerHTML)).toFixed(2)}`
-              setTimeout(() => {
-                  cartErrorElem.innerHTML = ""
-                  cartErrorElem.classList.remove('text-green')
-              }, 3000)
-          }
-          paymentAmount.value = ''
-      } else if (paymentAmount.value == parseFloat(amountTotal.innerHTML)) {
-          await shoesService.checkoutCartItem(loginUser)
-              .then((results) => {
-                  const response = results.data;
-                  if (response.error) {
-                      cartErrorElem.innerHTML = response.error
-                      setTimeout(() => {
-                          cartErrorElem.innerHTML = ""
-                      }, 3000)
-                      if (!loginUser) {
-                          loginButtonModal.click()
-                      }
-
-                  } else {
-                      cartErrorElem.classList.add('text-green')
-                      cartErrorElem.innerHTML = "Checkout Succesfull shoe will be dilivered within 7 bussines days"
-                      setTimeout(() => {
-                          cartErrorElem.innerHTML = ""
-                          cartErrorElem.classList.remove('text-green')
-                      }, 3000)
-                      if (!loginUser) {
-                          loginButtonModal.click()
-                      }
-                  }
-              });
-          showShoes(currentBrand, currentSize, currentColor);
-          showCart();
-          paymentAmount.value = ''
-      } else {
-          cartErrorElem.classList.add('text-danger')
-          cartErrorElem.innerHTML = `Payment Failed!!! <br> Payment amout not enough`
+      await shoesFunction.checkoutCartItem(currentUser).then((results) => {
+        const response = results.data;
+        if (response.error) {
+          cartErrorElem.innerHTML = response.error;
+          setCartError(response.error);
           setTimeout(() => {
-              cartErrorElem.innerHTML = ""
-              cartErrorElem.classList.remove('text-danger')
-          }, 3000)
+            setCartError("");
+          }, 3000);
+          if (!currentUser) {
+            loginModal.click();
+          }
+        } else {
+          setCartError(
+            <div className="text-green">
+              Checkout Succesfull shoe will be dilivered within 7 bussines days
+            </div>
+          );
+          setTimeout(() => {
+            setCartError("");
+          }, 3000);
+          if (!currentUser) {
+            loginModal.click();
+          }
+          setTrackCart((prevTrack) => prevTrack + 1);
+          setTrackAddProduct((prevTrack) => prevTrack + 1);
+        }
+      });
+
+      if (paymentAmount - userCartItems.total > 0) {
+        
+        setCartError(
+            <>
+            <div className="text-green">
+            Payment Successsfull <br /> Your change is{" "}
+            {(paymentAmount - userCartItems.total).toFixed(2)}
+          </div>
+            </>
+          
+        );
+        setTimeout(() => {
+          setCartError("");
+        }, 3000);
+        if (!currentUser) {
+          loginModal.click();
+        }
+        setTrackCart((prevTrack) => prevTrack + 1);
+        setTrackAddProduct((prevTrack) => prevTrack + 1);
       }
-  } else {
-      cartErrorElem.classList.add('text-danger')
-      cartErrorElem.innerHTML = `Please add shoes to cart`
+      paymentAmount = "";
+    } else if (paymentAmount == userCartItems.total) {
+     
+      await shoesFunction.checkoutCartItem(currentUser).then((results) => {
+        const response = results.data;
+        if (response.error) {
+          setCartError(response.error);
+          setTimeout(() => {
+            setCartError("");
+          }, 3000);
+          if (!currentUser) {
+            loginModal.click();
+          }
+        }
+
+        setTrackCart((prevTrack) => prevTrack + 1);
+        setTrackAddProduct((prevTrack) => prevTrack + 1);
+        setCartError(
+          <div className="text-green">
+            Checkout Succesfull shoe will be dilivered within 7 bussines days
+          </div>
+        );
+        setTimeout(() => {
+          setCartError("");
+        }, 3000);
+        //   else {
+        //       cartErrorElem.classList.add('text-green')
+        //       cartErrorElem.innerHTML = "Checkout Succesfull shoe will be dilivered within 7 bussines days"
+        //       setTimeout(() => {
+        //           cartErrorElem.innerHTML = ""
+        //           cartErrorElem.classList.remove('text-green')
+        //       }, 3000)
+        //       if (!currentUser) {
+        //           loginButtonModal.click()
+        //       }
+        //   }
+      });
+    } else {
+      setCartError(
+        <>
+          <>
+            Payment Failed!!! <br /> Payment amount not enough
+          </>
+        </>
+      );
       setTimeout(() => {
-          cartErrorElem.innerHTML = ""
-          cartErrorElem.classList.remove('text-danger')
-      }, 3000)
-      paymentAmount.value = ''
+        setCartError("");
+      }, 3000);
+      paymentAmount = "";
+    }
+  } else {
+    setCartError(`Please add shoes to cart`);
+    setTimeout(() => {
+      setCartError("");
+    }, 3000);
 
+    paymentAmount = "";
   }
-
-
 }

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 const Filter = ({
-  shoesRequests,
-  setShoesElements
+  filterData,
+  setFilterData,
+  setTrackAddProduct,
+setTrackCart
 }) => {
-  const backNav = document.querySelector(".backNav");
+
   const searchToggler = document.querySelector(".search-toggler");
 
-  const [filterData, setFilterData] = useState({
-    brand: "",
-    color: "",
-    size: "",
-  });
+ 
 
 
   function handleChange(event) {
@@ -23,102 +21,10 @@ const Filter = ({
         [name]: value,
       };
     });
+    setTrackAddProduct((prevTrack) => prevTrack + 1);
+    setTrackCart((prevTrack) => prevTrack + 1);
   }
-  function handleSubmit() {
-    if (filterData.brand && filterData.size && filterData.color) {
-      shoesRequests
-        .getShoeByBrandSizeAndColor(
-          filterData.brand,
-          filterData.size,
-          filterData.color
-        )
-        .then(function (results) {
-          let response = results.data;
-          let data = response.data;
-          setShoesElements(data);
-          if (!data) {
-            setShoesElements("Out Of Stock");
-          }
-        });
-    } else if (filterData.brand && filterData.size && !filterData.color) {
-      
-      shoesRequests
-        .getShoeByBrandAndSize(filterData.brand, filterData.size)
-        .then(function (results) {
-          let response = results.data;
-          let data = response.data;
-          setShoesElements(data);
-          if (!data) {
-            setShoesElements("Out Of Stock");
-          }
-        });
-    } else if (filterData.color && filterData.size && !filterData.brand) {
-      
-      shoesRequests
-        .getShoeBySizeAndColor(filterData.size, filterData.color)
-        .then(function (results) {
-          let response = results.data;
-          let data = response.data;
-          setShoesElements(data);
-          if (!data) {
-            setShoesElements("Out Of Stock");
-          }
-        });
-    } else if (filterData.brand && filterData.color && !filterData.size) {
-      
-      shoesRequests
-        .getShoeByBrandAndColor(filterData.brand, filterData.color)
-        .then(function (results) {
-          let response = results.data;
-          let data = response.data;
-          setShoesElements(data);
-          if (!data) {
-            setShoesElements("Out Of Stock");
-          }
-        });
-    } else if (filterData.brand && !filterData.size && !filterData.color) {
-      
-      shoesRequests.getShoeByBrand(filterData.brand).then(function (results) {
-        let response = results.data;
-        let data = response.data;
-        setShoesElements(data);
-        if (!data) {
-          setShoesElements("Out Of Stock");
-        }
-      });
-    } else if (!filterData.brand && !filterData.color && filterData.size) {
-      
-      shoesRequests.getShoeBySize(filterData.size).then(function (results) {
-        let response = results.data;
-        let data = response.data;
-        setShoesElements(data);
-        if (!data) {
-          setShoesElements("Out Of Stock");
-        }
-      });
-    } else if (!filterData.brand && filterData.color && !filterData.size) {
-      
-      shoesRequests.getShoeByColor(filterData.color).then(function (results) {
-        let response = results.data;
-        let data = response.data;
-        setShoesElements(data);
-        if (!data) {
-          setShoesElements("Out Of Stock");
-        }
-        if (response.error) {
-          setShoesElements("Out Of Stock");
-        }
-      });
-    } else {
-      shoesRequests.getShoes().then(function (results) {
-        let response = results.data;
-        let data = response.data;
-        setShoesElements(data);
-      });
-    }
-
-    backNav.style.display = "flex";
-  }
+  
 
   function exitSearch() {
     searchToggler.click("");
@@ -127,12 +33,9 @@ const Filter = ({
       color: "",
       size: "",
     });
-    backNav.style.display = "none";
-    shoesRequests.getShoes().then(function (results) {
-      let response = results.data;
-      let data = response.data;
-      setShoesElements(data);
-    });
+    setTrackAddProduct((prevTrack) => prevTrack + 1);
+    setTrackCart((prevTrack) => prevTrack + 1);
+
   }
 
   return (
@@ -228,20 +131,13 @@ const Filter = ({
             </option>
           </select>
           <div className="buttons">
-            <button
-              type="submit"
-              className="col-6 pt-1 mt-2 btn btn-primary searchNav "
-              onClick={handleSubmit}
-            >
-              Search
-            </button>
 
             <input
               type="button"
               value="Back"
               className="col-6 pt-0 mt-2 btn btn-secondary backNav"
               id="backButton"
-              style={{ display: "none" }}
+              // style={{ display: "none" }}
               onClick={exitSearch}
             />
           </div>

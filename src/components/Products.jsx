@@ -12,19 +12,19 @@ const Products = ({shoesElements,currentUser,setShoesElements,shoesRequests,logi
     function capitalize(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
-    useEffect(() => {
-      async function getShoes(){
-        await shoesRequests.getShoes().then((results) => {
-          const response = results.data.data;
-          setShoesElements(response);
-          // setTrackAddProduct((prev)=>prev+1)
-        });
-        //setTrackAddProduct((prevTrack)=>prevTrack+1)
-      }
-      getShoes()
+  //   useEffect(() => {
+  //     async function getShoes(){
+  //       await shoesRequests.getShoes().then((results) => {
+  //         const response = results.data.data;
+  //         setShoesElements(response);
+  //         // setTrackAddProduct((prev)=>prev+1)
+  //       });
+  //       //setTrackAddProduct((prevTrack)=>prevTrack+1)
+  //     }
+  //     getShoes()
      
-    // }, []);
-  }, [trackCart]);
+  //   // }, []);
+  // }, [trackCart]);
 
 
   let shoesData = []

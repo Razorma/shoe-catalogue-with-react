@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { addToCart,deleteFromCart } from "../apiCalls/helperFunctions";
+import {
+  addToCart,
+  deleteFromCart,
+  chechoutFromCart,
+} from "../apiCalls/helperFunctions";
 const Cart = ({
   setTrackCart,
   currentUser,
@@ -8,49 +12,54 @@ const Cart = ({
   userCartItems,
   trackAddProduct,
   setTrackAddProduct,
-setCartError,
-cartError
+  setCartError,
+  cartError,
+  loginModal,
 }) => {
-  
+  const [paymentAmount, setPaymentAmount] = useState(0);
+
   useEffect(() => {
-    let init = 0
-    
-      async function getCart(){
-        await shoesRequests.getCart(currentUser).then((results) => {
-          const response = results.data;
-          if (response.error) {
-            console.log(response.error)
-          }
-          setUserCartItems({
-            cartItems: response.cartItems,
-            data: response.data,
-            total: response.total,
-          });
-          // if(response.status === 'success'){
-          //   setTrackCart((prevTrack)=>prevTrack+1)
-          // }
-        })
-       
-        // setTrackCart((prevTrack)=>prevTrack+1)
-      }
-        
-      if(currentUser){    
-        getCart()
-       }else{
+    let init = 0;
+
+    async function getCart() {
+      await shoesRequests.getCart(currentUser).then((results) => {
+        const response = results.data;
+        if (response.error) {
+          console.error(response.error);
+        }
+        setUserCartItems({
+          cartItems: response.cartItems,
+          data: response.data,
+          total: response.total,
+        });
+      });
+    }
+
+    if (currentUser) {
+      getCart();
+    } else {
       setUserCartItems({
         cartItems: "",
         data: [],
         total: init.toFixed(2),
       });
-
     }
-  // }, []);
   }, [trackAddProduct]);
   function handleCheckout() {
-    console.log("welele");
+    let paymentAmount = document.querySelector("#paymentAmount")
+    chechoutFromCart(
+      parseFloat(paymentAmount.value),
+      currentUser,
+      loginModal,
+      setCartError,
+      userCartItems,
+      setTrackCart,
+      setTrackAddProduct
+    );
+    paymentAmount.value=""
   }
   let cartProducts = [];
- 
+
   if (userCartItems.data.length === 0) {
     cartProducts = [];
   } else if (userCartItems.data.length === 1) {
@@ -74,25 +83,50 @@ cartError
             <p className="addSubtract center">
               <i
                 className="fa-solid fa-minus minus"
-                onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,data.shoe_id, 1)}
+                onClick={() =>
+                  deleteFromCart(
+                    setTrackAddProduct,
+                    loginModal,
+                    setTrackCart,
+                    currentUser,
+                    data.shoe_id,
+                    1
+                  )
+                }
               ></i>
               <span className="cartItemNumber">{data.qty}</span>
               <i
                 className="fa-solid fa-plus plus"
-                //deleteFromCart( loginModal,shoesRequests,setTrackCart ,currentUser,id, qty)
-              onClick={()=>addToCart(setTrackAddProduct,loginModal,currentUser,data.shoe_id,setTrackCart,setCartError)}
+                onClick={() =>
+                  addToCart(
+                    setTrackAddProduct,
+                    loginModal,
+                    currentUser,
+                    data.shoe_id,
+                    setTrackCart,
+                    setCartError
+                  )
+                }
               ></i>
             </p>
           </div>
-          <i 
-          className="bi bi-trash3-fill" 
-          
-          onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,data.shoe_id, data.qty)}
+          <i
+            className="bi bi-trash3-fill"
+            onClick={() =>
+              deleteFromCart(
+                setTrackAddProduct,
+                loginModal,
+                setTrackCart,
+                currentUser,
+                data.shoe_id,
+                data.qty
+              )
+            }
           ></i>
         </div>
       );
   } else {
-    cartProducts = userCartItems.data.map((shoe) => (  
+    cartProducts = userCartItems.data.map((shoe) => (
       <div className="cart-box" key={shoe.shoe_id}>
         <img src={shoe.shoe_picture} href={shoe.shoe_picture} alt="" />
         <div className="cart-info">
@@ -111,23 +145,59 @@ cartError
           <p className="addSubtract center">
             <i
               className="fa-solid fa-minus minus"
-              onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,shoe.shoe_id, 1)}
+              onClick={() =>
+                deleteFromCart(
+                  setTrackAddProduct,
+                  loginModal,
+                  setTrackCart,
+                  currentUser,
+                  shoe.shoe_id,
+                  1
+                )
+              }
             ></i>
             <span className="cartItemNumber">{shoe.qty}</span>
             <i
-              className="fa-solid fa-plus plus" onClick={()=>addToCart(setTrackAddProduct,loginModal,currentUser,shoe.shoe_id,setTrackCart,setCartError)}
+              className="fa-solid fa-plus plus"
+              onClick={() =>
+                addToCart(
+                  setTrackAddProduct,
+                  loginModal,
+                  currentUser,
+                  shoe.shoe_id,
+                  setTrackCart,
+                  setCartError
+                )
+              }
             ></i>
           </p>
-        </div>                       
-        <i className="bi bi-trash3-fill" onClick={()=> deleteFromCart(setTrackAddProduct,loginModal,setTrackCart ,currentUser,shoe.shoe_id, shoe.qty)}></i>
+        </div>
+        <i
+          className="bi bi-trash3-fill"
+          onClick={() =>
+            deleteFromCart(
+              setTrackAddProduct,
+              loginModal,
+              setTrackCart,
+              currentUser,
+              shoe.shoe_id,
+              shoe.qty
+            )
+          }
+        ></i>
       </div>
     ));
   }
 
   return (
     <div id="cart" className="cart">
-      <i className="bi bi-x closeCart" onClick={()=> document.querySelector(".cart").style.right = "-1000px"}></i>
-      <p className="errorCart  mt-5">{cartError}</p>
+      <i
+        className="bi bi-x closeCart"
+        onClick={() =>
+          (document.querySelector(".cart").style.right = "-1000px")
+        }
+      ></i>
+      <div className="errorCart  mt-5 text-danger">{cartError}</div>
 
       <div className="cartProducts mb-5 pb-5">{cartProducts}</div>
       <div className="bg-secondary row w-100 d-flex justify-content-center paymentAmount">
@@ -145,7 +215,7 @@ cartError
       <div className="checkout">
         <div className="total">
           <p>Total</p>
-          <span>R</span>{" "}
+          <span>R</span>
           <span className="amountTotal">{userCartItems.total}</span>
         </div>
         <div className="checkoutButton">

@@ -26,6 +26,11 @@ function App() {
     data: [],
     total: "",
   });
+  const [filterData, setFilterData] = useState({
+    brand: "",
+    color: "",
+    size: "",
+  });
   const [signUpError, setSignUpError] = useState('');
   const [logInError, setLogInError] = useState('');
   const [trackCart, setTrackCart] = useState(0);
@@ -37,32 +42,120 @@ function App() {
  
 
   const orderCart = document.querySelector(".cart");
-  // const orderCart = document.querySelector(".cart");
-  function handleCloseCart() {
-    orderCart.style.right = "-1000px";
-  }
-  // function showCart(){
-  //   shoesRequests.getCart(currentUser).then((results) => {
-  //     const response = results.data;
-  //     if (response.error) {
-  //       console.log(response.error)
-  //     }
-  //     setUserCartItems({
-  //       cartItems: response.cartItems,
-  //       data: response.data,
-  //       total: response.total,
-  //     });
-  //   })
 
-  // }
+ 
+
 
   //Function open cart
   function openCart() {
     orderCart.style.right = "0";
   }
 
-  
-  
+  useEffect(() => {
+
+ 
+      async function getShoes(){
+      if (filterData.brand && filterData.size && filterData.color) {
+        await shoesRequests
+          .getShoeByBrandSizeAndColor(
+            filterData.brand,
+            filterData.size,
+            filterData.color
+          )
+          .then(function (results) {
+            let response = results.data;
+            let data = response.data;
+            setShoesElements(data);
+            if (!data) {
+              setShoesElements("Out Of Stock");
+            }
+          });
+      } else if (filterData.brand && filterData.size && !filterData.color) {
+        
+        await shoesRequests
+          .getShoeByBrandAndSize(filterData.brand, filterData.size)
+          .then(function (results) {
+            let response = results.data;
+            let data = response.data;
+            setShoesElements(data);
+            if (!data) {
+              setShoesElements("Out Of Stock");
+            }
+          });
+      } else if (filterData.color && filterData.size && !filterData.brand) {
+        
+        await shoesRequests
+          .getShoeBySizeAndColor(filterData.size, filterData.color)
+          .then(function (results) {
+            let response = results.data;
+            let data = response.data;
+            setShoesElements(data);
+            if (!data) {
+              setShoesElements("Out Of Stock");
+            }
+          });
+      } else if (filterData.brand && filterData.color && !filterData.size) {
+        
+        await shoesRequests
+          .getShoeByBrandAndColor(filterData.brand, filterData.color)
+          .then(function (results) {
+            let response = results.data;
+            let data = response.data;
+            setShoesElements(data);
+            if (!data) {
+              setShoesElements("Out Of Stock");
+            }
+          });
+      } else if (filterData.brand && !filterData.size && !filterData.color) {
+        
+        await shoesRequests.getShoeByBrand(filterData.brand).then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
+      } else if (!filterData.brand && !filterData.color && filterData.size) {
+        
+        await shoesRequests.getShoeBySize(filterData.size).then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+        });
+      } else if (!filterData.brand && filterData.color && !filterData.size) {
+        
+        await  shoesRequests.getShoeByColor(filterData.color).then(function (results) {
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+          if (!data) {
+            setShoesElements("Out Of Stock");
+          }
+          if (response.error) {
+            setShoesElements("Out Of Stock");
+          }
+        });
+        
+      } else {
+       
+        await shoesRequests.getShoes().then((results) => {
+          
+          let response = results.data;
+          let data = response.data;
+          setShoesElements(data);
+        });
+      }
+
+    }
+    getShoes()
+   
+
+}, [trackCart]);
+
   return (
     <>
       <Header 
@@ -71,7 +164,7 @@ function App() {
       shoesRequests={shoesRequests}
       setTrackAddProduct={setTrackAddProduct}
       />
-      {/* {shoesElements? */}
+      {shoesElements?
       <main className="container-fluid mt-5">
         <div className="icon" onClick={openCart}>
           <span className="totalCart">{userCartItems.cartItems?userCartItems.cartItems:""}</span>
@@ -89,8 +182,10 @@ function App() {
         setSignUpError={setSignUpError}
         />
         <Filter 
-        shoesRequests={shoesRequests} 
-        setShoesElements={setShoesElements}
+        filterData={filterData}
+        setFilterData ={setFilterData }
+        setTrackCart={setTrackCart}
+        setTrackAddProduct={setTrackAddProduct}
         />
         <hr />
         <Cart
@@ -103,9 +198,9 @@ function App() {
           trackAddProduct={trackAddProduct}
           setCartError={setCartError}
           cartError={cartError}
-          
+          loginModal={loginModal}
         />
-       {/* <div id="products" >{shoesData}</div> */}
+       
        <Products
         shoesElements={shoesElements}
         currentUser={currentUser}
@@ -120,15 +215,14 @@ function App() {
         <hr />
         <Contact/>
         <Footer/>
-      </main>
-      {/* :
+      </main>:
       <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open
     >
       <CircularProgress color="inherit" />
     </Backdrop>
-      } */}
+      } 
     </>
   );
 }
