@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
-const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) => {
+const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct,userRole}) => {
   function closeNavbar() {
     var navNavbar = document.getElementById("navNavbar");
     var bootstrapButton = document.querySelector(".navbar-toggler");
@@ -22,8 +22,9 @@ const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) =
     setTrackAddProduct((prevTrack)=>prevTrack+1)
     shoesRequests
       .logOut()
-      // location.reload()
       localStorage.removeItem("CurrentUser")
+    localStorage.removeItem("role")
+    location.reload();
   }
   return (
     <header className="p-0 m-0 container-fluid fixed-top">
@@ -63,7 +64,9 @@ const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) =
                   
                 </a>
               </li>
-              <li className="nav-item ">
+              {!userRole &&
+              <>
+               <li className="nav-item ">
                 <a
                   className="nav-link text-light navPro"
                   href="#Products"
@@ -81,6 +84,8 @@ const Header = ({currentUser,setCurrentUser,shoesRequests,setTrackAddProduct}) =
                   Contact
                 </a>
               </li>
+              </>
+              }
             </ul>
           </div>
         </div>

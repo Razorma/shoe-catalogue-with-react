@@ -11,6 +11,7 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import Admin from "./components/Admin";
 
 axios.defaults.withCredentials = true;
 
@@ -19,13 +20,19 @@ const shoesRequests = shoes(axios);
 function App() {
   // const [logInStatus, setLogInStatus] = useState(false);
   const [currentUser, setCurrentUser] = useState(localStorage.getItem("CurrentUser"));
-  const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState(localStorage.getItem("role"));
   const [shoesElements, setShoesElements] = useState(null);
   const [userCartItems, setUserCartItems] = useState({
     cartItems: "",
     data: [],
     total: "",
   });
+  const [adminOrderItems, setAdminOrderItems] = useState({
+    cartItems: "",
+    data: [],
+    total: "",
+  })
+  
   const [filterData, setFilterData] = useState({
     brand: "",
     color: "",
@@ -35,6 +42,7 @@ function App() {
   const [logInError, setLogInError] = useState('');
   const [trackCart, setTrackCart] = useState(0);
   const [trackAddProduct, setTrackAddProduct] = useState(0);
+  const [trackOrders, setTrackOrders] = useState(0);
 
   const [cartError, setCartError] = useState([]);
 
@@ -52,8 +60,6 @@ function App() {
   }
 
   useEffect(() => {
-
- 
       async function getShoes(){
       if (filterData.brand && filterData.size && filterData.color) {
         await shoesRequests
@@ -152,9 +158,32 @@ function App() {
 
     }
     getShoes()
-   
+    
 
 }, [trackCart]);
+
+useEffect(() => {
+
+  async function getOrders() {
+
+    await shoesRequests.getOrders().then((results) => {
+      const response = results.data;
+      if (response.error) {
+        console.error(response.error)
+      }
+      setAdminOrderItems({
+        cartItems: response.cartItems,
+        data: response.data,
+        total: response.total,
+      });
+    });
+  }
+
+  if (userRole) {
+      getOrders();
+  } 
+
+}, [trackOrders]);
 
   return (
     <>
@@ -163,13 +192,16 @@ function App() {
       setCurrentUser={setCurrentUser} 
       shoesRequests={shoesRequests}
       setTrackAddProduct={setTrackAddProduct}
+      userRole={userRole}
       />
+      
       {shoesElements?
       <main className="container-fluid mt-5">
-        <div className="icon" onClick={openCart}>
+        {!userRole&&<div className="icon" onClick={openCart}>
           <span className="totalCart">{userCartItems.cartItems?userCartItems.cartItems:""}</span>
           <i className="bi bi-cart3 openCart o mx-2"></i>
-        </div>
+        </div>}
+        
         <LoginModal
           setUserRole={setUserRole}
           setCurrentUser={setCurrentUser}
@@ -201,17 +233,25 @@ function App() {
           loginModal={loginModal}
         />
        
+       {!userRole&&
        <Products
-        shoesElements={shoesElements}
-        currentUser={currentUser}
-        setShoesElements={setShoesElements}
-        shoesRequests={shoesRequests}
-        loginModal={loginModal}
-        setCartError={setCartError}
-        setTrackCart={setTrackCart}
-        setTrackAddProduct={setTrackAddProduct}
-        trackCart={trackCart}
-       />
+       shoesElements={shoesElements}
+       currentUser={currentUser}
+       setShoesElements={setShoesElements}
+       shoesRequests={shoesRequests}
+       loginModal={loginModal}
+       setCartError={setCartError}
+       setTrackCart={setTrackCart}
+       setTrackAddProduct={setTrackAddProduct}
+       trackCart={trackCart}
+      />
+       }
+      {userRole&& 
+      <Admin 
+      adminOrderItems={adminOrderItems}
+      setTrackOrders={setTrackOrders}
+      />
+      }
         <hr />
         <Contact/>
         <Footer/>

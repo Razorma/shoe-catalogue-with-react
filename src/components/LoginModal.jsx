@@ -39,7 +39,10 @@ const LoginModal = ({ setCurrentUser, setUserRole,logInError,setLogInError }) =>
         if (response.status === "success") {
           const bootstrapLoginModal = document.querySelector(".btn-close");
           bootstrapLoginModal.click();
-          setUserRole(response.role);
+          if(response.role==="admin"){
+            localStorage.setItem("role",response.role)
+            setUserRole(response.role);
+          }
           localStorage.setItem("CurrentUser",response.username)
           setCurrentUser(response.username);
           location.reload()

@@ -16,7 +16,7 @@ const Cart = ({
   cartError,
   loginModal,
 }) => {
-  const [paymentAmount, setPaymentAmount] = useState(0);
+  
 
   useEffect(() => {
     let init = 0;
@@ -25,7 +25,8 @@ const Cart = ({
       await shoesRequests.getCart(currentUser).then((results) => {
         const response = results.data;
         if (response.error) {
-          console.error(response.error);
+          localStorage.removeItem("CurrentUser")
+          location.reload();
         }
         setUserCartItems({
           cartItems: response.cartItems,

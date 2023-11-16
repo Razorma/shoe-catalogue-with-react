@@ -23,7 +23,9 @@ export function addToCart(
       }
     });
   } else {
-    loginModal.click();
+    localStorage.removeItem("CurrentUser")
+    localStorage.removeItem("role")
+    location.reload();
   }
 }
 export async function deleteFromCart(
@@ -39,7 +41,9 @@ export async function deleteFromCart(
     setTrackCart((prevTrack) => prevTrack + 1);
     setTrackAddProduct((prevTrack) => prevTrack + 1);
   } else {
-    loginModal.click();
+    localStorage.removeItem("CurrentUser")
+    localStorage.removeItem("role")
+    location.reload();
   }
 }
 
@@ -66,7 +70,9 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            loginModal.click();
+            localStorage.removeItem("CurrentUser")
+            localStorage.removeItem("role")
+            location.reload();
           }
         } else {
           setCartError(
@@ -78,7 +84,9 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            loginModal.click();
+            localStorage.removeItem("CurrentUser")
+            localStorage.removeItem("role")
+            location.reload();
           }
           setTrackCart((prevTrack) => prevTrack + 1);
           setTrackAddProduct((prevTrack) => prevTrack + 1);
@@ -100,7 +108,9 @@ export async function chechoutFromCart(
           setCartError("");
         }, 3000);
         if (!currentUser) {
-          loginModal.click();
+          localStorage.removeItem("CurrentUser")
+          localStorage.removeItem("role")
+          location.reload();
         }
         setTrackCart((prevTrack) => prevTrack + 1);
         setTrackAddProduct((prevTrack) => prevTrack + 1);
@@ -116,7 +126,9 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            loginModal.click();
+            localStorage.removeItem("CurrentUser")
+            localStorage.removeItem("role")
+            location.reload();
           }
         }
 
@@ -130,17 +142,6 @@ export async function chechoutFromCart(
         setTimeout(() => {
           setCartError("");
         }, 3000);
-        //   else {
-        //       cartErrorElem.classList.add('text-green')
-        //       cartErrorElem.innerHTML = "Checkout Succesfull shoe will be dilivered within 7 bussines days"
-        //       setTimeout(() => {
-        //           cartErrorElem.innerHTML = ""
-        //           cartErrorElem.classList.remove('text-green')
-        //       }, 3000)
-        //       if (!currentUser) {
-        //           loginButtonModal.click()
-        //       }
-        //   }
       });
     } else {
       setCartError(
