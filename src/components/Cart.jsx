@@ -16,8 +16,6 @@ const Cart = ({
   cartError,
   loginModal,
 }) => {
-  
-
   useEffect(() => {
     let init = 0;
 
@@ -25,10 +23,9 @@ const Cart = ({
       await shoesRequests.getCart(currentUser).then((results) => {
         const response = results.data;
         if (response.error) {
-          localStorage.removeItem("CurrentUser")
-          localStorage.removeItem("role")
+          localStorage.removeItem("CurrentUser");
+          localStorage.removeItem("role");
           location.reload();
-          
         }
         setUserCartItems({
           cartItems: response.cartItems,
@@ -49,7 +46,7 @@ const Cart = ({
     }
   }, [trackAddProduct]);
   function handleCheckout() {
-    let paymentAmount = document.querySelector("#paymentAmount")
+    let paymentAmount = document.querySelector("#paymentAmount");
     chechoutFromCart(
       parseFloat(paymentAmount.value),
       currentUser,
@@ -59,7 +56,7 @@ const Cart = ({
       setTrackCart,
       setTrackAddProduct
     );
-    paymentAmount.value=""
+    paymentAmount.value = "";
   }
   let cartProducts = [];
 
@@ -202,7 +199,16 @@ const Cart = ({
       ></i>
       <div className="errorCart  mt-5 text-danger">{cartError}</div>
 
-      <div className="cartProducts mb-5 pb-5">{cartProducts}</div>
+      <div className="cartProducts mb-5 pb-5">
+        {userCartItems.cartItems ? (
+          cartProducts
+        ) : (
+          <div class="emptyMessage">
+            <p class="h5">Your cart is empty</p>
+            <hr />
+          </div>
+        )}
+      </div>
       <div className="bg-secondary row w-100 d-flex justify-content-center paymentAmount">
         <div className="form-group w-50 ">
           <label htmlFor="paymentAmount" className="text-light">
