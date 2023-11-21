@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Admin from "./components/Admin";
+import AddShoe from "./components/AddShoe";
 
 axios.defaults.withCredentials = true;
 
@@ -201,7 +202,17 @@ useEffect(() => {
           <span className="totalCart">{userCartItems.cartItems?userCartItems.cartItems:""}</span>
           <i className="bi bi-cart3 openCart o mx-2"></i>
         </div>}
-        
+        {userRole && 
+      <i 
+      className="bi bi-database-fill-gear" 
+      data-bs-toggle="offcanvas" 
+      data-bs-target="#addShoesToCatalogue"
+      aria-controls="addShoesToCatalogue"
+      > <span></span> Add Shoe</i>
+       }
+        {userRole && <AddShoe
+        loginModal={loginModal}
+        />}
         <LoginModal
           setUserRole={setUserRole}
           setCurrentUser={setCurrentUser}
@@ -213,14 +224,14 @@ useEffect(() => {
         signUpError={signUpError}
         setSignUpError={setSignUpError}
         />
-        <Filter 
+        {!userRole&&<Filter 
         filterData={filterData}
         setFilterData ={setFilterData }
         setTrackCart={setTrackCart}
         setTrackAddProduct={setTrackAddProduct}
-        />
+        />}
         <hr />
-        <Cart
+        {!userRole&&<Cart
           setTrackCart={setTrackCart}
           currentUser={currentUser}
           shoesRequests={shoesRequests}
@@ -231,7 +242,7 @@ useEffect(() => {
           setCartError={setCartError}
           cartError={cartError}
           loginModal={loginModal}
-        />
+        />}
        
        {!userRole&&
        <Products
@@ -246,6 +257,7 @@ useEffect(() => {
        trackCart={trackCart}
       />
        }
+      
       {userRole&& 
       <Admin 
       adminOrderItems={adminOrderItems}
@@ -253,7 +265,7 @@ useEffect(() => {
       />
       }
         <hr />
-        <Contact/>
+        {!userRole&&<Contact/>}
         <Footer/>
       </main>:
       <Backdrop

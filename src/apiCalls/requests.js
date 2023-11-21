@@ -1,5 +1,6 @@
 //Function to get and post http request to the server
 export default function shoes(axios) {
+    
     //Get all the shoes
         function getShoes() {
             return axios.get('https://shoes-api-sr1k.onrender.com/api/shoes')
@@ -57,7 +58,7 @@ export default function shoes(axios) {
         }
     //get user cart
         function getCart(username) {
-            return axios.get(`https://shoes-api-sr1k.onrender.com/api/getCart/username/${username}`,{ withCredentials: true })
+            return axios.get(`https://shoes-api-sr1k.onrender.com/api/getCart/username/${username}`)
         }
     //get orders foe admin
         function getOrders() {

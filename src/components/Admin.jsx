@@ -30,7 +30,6 @@ const Admin = ({ adminOrderItems,setTrackOrders}) => {
     .then((results)=>{
       
       if(results.data.error){
-        console.error(results.data.error)
         localStorage.removeItem("CurrentUser")
         localStorage.removeItem("role")
         location.reload();
@@ -112,12 +111,13 @@ const Admin = ({ adminOrderItems,setTrackOrders}) => {
         <p>
           <span>Total Ordered Items: </span> {adminOrderItems.cartItems}
         </p>
-        <input
+
+        {!adminOrderItems.cartItems?"":<input
           type="button"
           className="btn btn-secondary clearAdmin p-0 m-0"
           value="Clear"
           onClick={clearAdminCartHistory}
-        />
+        />}
       </div>
     </div>
   );

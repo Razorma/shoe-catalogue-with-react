@@ -26,7 +26,9 @@ const Cart = ({
         const response = results.data;
         if (response.error) {
           localStorage.removeItem("CurrentUser")
+          localStorage.removeItem("role")
           location.reload();
+          
         }
         setUserCartItems({
           cartItems: response.cartItems,

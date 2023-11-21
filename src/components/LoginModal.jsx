@@ -2,7 +2,7 @@ import { useState } from "react";
 import React from "react";
 import shoes from "../apiCalls/requests";
 import axios from "axios";
-
+axios.defaults.withCredentials = true;
 const shoesRequests = shoes(axios);
 
 const LoginModal = ({ setCurrentUser, setUserRole,logInError,setLogInError }) => {

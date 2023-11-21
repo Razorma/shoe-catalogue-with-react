@@ -1,5 +1,6 @@
 import axios from "axios";
 import shoes from "./requests";
+axios.defaults.withCredentials = true;
 const shoesFunction = shoes(axios);
 export function addToCart(
   setTrackAddProduct,
@@ -23,9 +24,7 @@ export function addToCart(
       }
     });
   } else {
-    localStorage.removeItem("CurrentUser")
-    localStorage.removeItem("role")
-    location.reload();
+    loginModal.click() 
   }
 }
 export async function deleteFromCart(
@@ -41,9 +40,7 @@ export async function deleteFromCart(
     setTrackCart((prevTrack) => prevTrack + 1);
     setTrackAddProduct((prevTrack) => prevTrack + 1);
   } else {
-    localStorage.removeItem("CurrentUser")
-    localStorage.removeItem("role")
-    location.reload();
+    loginModal.click() 
   }
 }
 
@@ -70,9 +67,8 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            localStorage.removeItem("CurrentUser")
-            localStorage.removeItem("role")
-            location.reload();
+
+            loginModal.click()
           }
         } else {
           setCartError(
@@ -84,9 +80,8 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            localStorage.removeItem("CurrentUser")
-            localStorage.removeItem("role")
-            location.reload();
+
+             loginModal.click()
           }
           setTrackCart((prevTrack) => prevTrack + 1);
           setTrackAddProduct((prevTrack) => prevTrack + 1);
@@ -108,9 +103,8 @@ export async function chechoutFromCart(
           setCartError("");
         }, 3000);
         if (!currentUser) {
-          localStorage.removeItem("CurrentUser")
-          localStorage.removeItem("role")
-          location.reload();
+
+           loginModal.click()
         }
         setTrackCart((prevTrack) => prevTrack + 1);
         setTrackAddProduct((prevTrack) => prevTrack + 1);
@@ -126,9 +120,8 @@ export async function chechoutFromCart(
             setCartError("");
           }, 3000);
           if (!currentUser) {
-            localStorage.removeItem("CurrentUser")
-            localStorage.removeItem("role")
-            location.reload();
+
+             loginModal.click()
           }
         }
 
